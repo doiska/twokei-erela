@@ -1,0 +1,38 @@
+{
+	"name": "twokei-music",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"start": "tsc && resolve-tspaths && node --trace-warnings ./dist/index.js"
+	},
+	"settings": {
+		"import/resolver": {
+			"typescript": {}
+		}
+	},
+	"devDependencies": {
+		"@types/node": "^18.0.0",
+		"@typescript-eslint/eslint-plugin": "^5.29.0",
+		"@typescript-eslint/parser": "^5.29.0",
+		"eslint-import-resolver-typescript": "^2.7.1",
+		"eslint-plugin-import-helpers": "^1.2.1",
+		"resolve-tspaths": "^0.6.0",
+		"tsconfig-paths": "^4.0.0",
+		"typescript": "^4.7.3"
+	},
+	"dependencies": {
+		"@discordjs/voice": "^0.11.0-dev.1655381032-4df491c",
+		"@types/i18n": "^0.13.3",
+		"discord.js": "^14.0.0-dev.1655381041-4df491c",
+		"dotenv": "^16.0.1",
+		"erela.js": "^2.3.3",
+		"erela.js-spotify": "^1.2.0",
+		"eslint": "^8.18.0",
+		"i18n": "^0.15.0",
+		"mongodb": "3.6.0",
+		"reflect-metadata": "^0.1.13",
+		"typeorm": "^0.3.6",
+		"winston": "^3.8.1"
+	}
+}

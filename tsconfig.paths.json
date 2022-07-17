@@ -1,0 +1,34 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./src",
+		"paths": {
+			"@client/*": [
+				"./client/*"
+			],
+			"@controllers/*": [
+				"./controllers/*"
+			],
+			"@config/*": [
+				"./config/*"
+			],
+			"@entities/*": [
+				"./entities/*"
+			],
+			"@events/*": [
+				"./events/*"
+			],
+			"@player/*": [
+				"./player/*"
+			],
+			"@structures/*": [
+				"./structures/*"
+			],
+			"@utils/*": [
+				"./utils/*"
+			],
+			"@loggers/*": [
+				"./loggers/*"
+			]
+		}
+	}
+}

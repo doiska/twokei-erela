@@ -1,0 +1,21 @@
+{
+	"extends": "./tsconfig.paths.json",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "commonjs",
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"baseUrl": "./src",
+		"removeComments": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitAny": true,
+		"skipLibCheck": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"typeRoots": [
+			"node_modules/@types"
+		]
+	}
+}

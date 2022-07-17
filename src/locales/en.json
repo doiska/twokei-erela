@@ -1,0 +1,47 @@
+{
+	"BUTTON_STOP": "Stop",
+	"BUTTON_PREVIOUS": "Previous",
+	"BUTTON_PAUSE": "Pause",
+	"BUTTON_RESUME": "Resume",
+	"BUTTON_PLAY": "Play",
+	"BUTTON_NEXT": "Next",
+	"BUTTON_SHUFFLE": "Shuffle",
+	"BUTTON_REPEAT": "Loop",
+	"BUTTON_AUTO_PLAY": "Auto Play",
+	"BUTTON_SAVE_PLAYLIST": "Save playlist",
+	"BUTTON_LOAD_PLAYLIST": "Load playlist",
+
+	"EMBED_TITLE": "**No song playing**",
+	"EMBED_HOW_TO_USE": "\n\n**✌ How to use:**\n- Just type the name or link, no command needed.\n- You can select tracks by clicking on menu below.\n- Uncheck the current track will pause the queue.",
+	"EMBED_HELP_DEV": "\n\n**😼 Support the development**\n- [**Buy me a coffee**](https://ko-fi.com/doiska)\n- [**Invite Twokei to other servers**](https://twokei.store)",
+	"EMBED_NEW_FEATURES": "\n\n**🔥 New features:**\n- **Playlist**: Now you can save your favorite playlist, and load it later!\n- **Infinite mode**: Play one song and let Twokei add related!",
+	"EMBED_FOOTER": "\uD83C\uDFA7 Twokei - Youtube, Twitch, Spotify and 700+ services!",
+
+	"EMBED_ADD_SONG": "Add a song to the queue",
+	"EMBED_LANGUAGE_SWITCH": "English >> Português",
+
+	"NEW_LANGUAGE": "Aight, i'll change the language to **English**",
+
+	"PLAYING": "Playing",
+	"PAUSED": "Paused",
+	"STOPPED": "Stopped",
+
+	"REPEAT": "Loop",
+	"REPEAT_NONE": "off",
+	"REPEAT_SONG": "track",
+	"REPEAT_QUEUE": "queue",
+
+	"INFINITE_MODE": "Infinite",
+
+	"NO_QUEUE": "No song in queue.",
+
+	"NOT_IN_VOICE_CHANNEL": "You must be in a voice channel to use this command.",
+
+	"PLAYLIST_SAVED": "Playlist saved!",
+	"PLAYLIST_LOADED": "Playlist loaded!",
+	"PLAYLIST_LOADED_SONGS": "**{0}** songs queue'd.",
+
+	"ERROR_OCCURRED": "An error occurred, please try again. If the problem persists, contact the developer.\n Maybe the song is not available in the current region.",
+	"ERROR_PLAYLIST": "You have added a Mix, it may not load all songs.\n To search related, enable **Auto play**.",
+	"NO_RESULTS_FOUND": "No results found."
+}
