@@ -1,4 +1,5 @@
 {
+	"GENERIC_ERROR": "Ops, algo deu errado!",
 	"BUTTON_STOP": "Parar",
 	"BUTTON_PREVIOUS": "Voltar",
 	"BUTTON_PAUSE": "Pausar",
@@ -10,6 +11,7 @@
 	"BUTTON_AUTO_PLAY": "Reprodução automática",
 	"BUTTON_SAVE_PLAYLIST": "Salvar playlist",
 	"BUTTON_LOAD_PLAYLIST": "Carregar playlist",
+	"BUTTON_IMAGE_EDITOR": "Editar imagem",
 	"EMBED_TITLE": "**Nenhuma música em reprodução 😔**",
 	"EMBED_HOW_TO_USE": "\n\n**✌ Como usar?**\n- Digite o nome ou link da música, não precisa de comando!\n- Clicando na caixinha você pode **alternar entre as faixas**.\n- Desmarcar a música atual fará a fila pausar.",
 	"EMBED_HELP_DEV": "\n\n** 😼 Apoie o desenvolvimento:**\n- [**Me pague um café** ☕](https://ko-fi.com/doiska)\n- [**Convide Twokei para outros servidores** 😊](https://twokei.store)",
@@ -33,5 +35,6 @@
 	"PLAYLIST_LOADED_SONGS": "**{0}** faixas.",
 	"ERROR_OCCURRED": "Ocorreu um erro ao carregar a música. É possível que ela não exista ou o bot não tenha permissão para acessá-la.",
 	"ERROR_PLAYLIST": "Você adicionou um Mix, é possível que não carregue todas as músicas.\nPara procurar relacionadas, ative **Reprodução automática**.",
-	"NO_RESULTS_FOUND": "Nenhum resultado encontrado."
+	"NO_RESULTS_FOUND": "Nenhum resultado encontrado.",
+	"IMAGE_EDITOR_TITLE": "Edite a imagem"
 }

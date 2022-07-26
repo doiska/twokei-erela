@@ -3,6 +3,7 @@ import Twokei from "@client/Twokei";
 import { PlayerEventLogger } from "@loggers/index";
 import PlayerEmbedController from "@player/controllers/PlayerEmbedController";
 import { registerEvent } from "@structures/EventHandler";
+import { UpdateType } from "@structures/ExtendedPlayer";
 
 
 registerEvent("ready", () => {
@@ -34,5 +35,9 @@ registerEvent("ready", () => {
 		PlayerEventLogger.error(`TRACK ERROR:`, err, err)
 	)
 
-	playerManager.on("queueEnd", (player) => player.destroy())
+	playerManager.on("queueEnd", (player) => player.destroy());
+
+	playerManager.on("queueUpdate", async (player, updateType) =>
+		PlayerEmbedController.deferUpdate(player, { menu: updateType === UpdateType.SHUFFLE, button: true })
+	);
 });

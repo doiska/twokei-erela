@@ -9,8 +9,9 @@ export type GuildData = {
 }
 
 export type Media = {
-	channel: string;
-	message: string;
+	channel?: string;
+	message?: string;
+	image?: string;
 }
 
 @Entity()

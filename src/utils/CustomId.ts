@@ -17,5 +17,7 @@ export const ButtonID = {
 	SAVE_PLAYLIST: "save-playlist-button",
 	LOAD_PLAYLIST: "load-playlist-button",
 
-	LANGUAGE_SWITCH: "language-switch-button"
+	LANGUAGE_SWITCH: "language-switch-button",
+
+	EDIT_IMAGE: "edit-image-button",
 };

@@ -6,7 +6,7 @@ import GuildController from "@controllers/GuildController";
 import { Media } from "@entities/Guild";
 import { DatabaseLogger } from "@loggers/index";
 import { getChannelById, getMessageById } from "@utils/Discord";
-import { createDefaultMessage } from "@utils/Embed";
+import { createDefaultMessage } from "@utils/DefaultEmbed";
 
 export enum ValidationResponse {
 	GENERIC_ERROR,
@@ -71,7 +71,7 @@ class _ChannelController {
 	public async getMediaChannel(guildId: string): Promise<TextChannel | undefined> {
 		const media = await this.getMedia(guildId);
 
-		if (!media) return;
+		if (!media || !media.channel) return;
 
 		const guild = await Twokei.guilds.fetch(guildId);
 
@@ -81,7 +81,7 @@ class _ChannelController {
 	public async getMediaMessage(guild: string): Promise<Message | undefined> {
 		const media = await this.getMedia(guild);
 
-		if (!media) return;
+		if (!media || !media.message || !media.channel) return;
 
 		return getMessageById(media.message, media.channel).then(m => m).catch(() => undefined);
 	}
@@ -89,7 +89,7 @@ class _ChannelController {
 	public async resetMediaMessage(guild: string): Promise<boolean> {
 		const mediaMessage = await this.getMediaMessage(guild);
 
-		if(!mediaMessage) return false;
+		if(!mediaMessage) throw new Error("No media message found");
 
 		await mediaMessage.edit(await createDefaultMessage(guild) as MessageEditOptions);
 		return true;

@@ -12,6 +12,7 @@ class _UserRateLimit {
 
 	public add(user: string, automatically = false, delay = 3000) {
 		this.rateLimits.set(user, this.get(user) + 1);
+
 		if(automatically)
 			setTimeout(() => this.remove(user), delay);
 	}

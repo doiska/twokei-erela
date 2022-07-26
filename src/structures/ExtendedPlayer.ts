@@ -1,10 +1,17 @@
 import { Player } from "erela.js";
-import { Node } from "erela.js/structures/Node";
 import { Track, UnresolvedTrack } from "erela.js/structures/Player";
+
+export enum UpdateType {
+	PAUSE,
+	RESUME,
+	SHUFFLE,
+	REPEAT
+}
 
 declare module "erela.js/structures/Manager" {
 	interface Manager {
 		on(event: "trackAdd", listener: (player: Player, track: Track | UnresolvedTrack, offset?: number) => void): this;
+		on(event: "queueUpdate", listener: (player: Player, type: UpdateType) => void): this;
 	}
 }
 
@@ -37,14 +44,21 @@ export default class ExtendedPlayer extends Player {
 		}
 	}
 
+	public pause(pause: boolean): this {
+		this.manager.emit('queueUpdate', this, pause ? UpdateType.PAUSE : UpdateType.RESUME);
+		return super.pause(pause);
+	}
+
 	public toggleRepeat() {
 		if(this.trackRepeat) {
 			this.setQueueRepeat(true);
-		} else if(super.queueRepeat) {
+		} else if(this.queueRepeat) {
 			this.setTrackRepeat(true);
 		} else {
 			this.setQueueRepeat(false);
 		}
+
+		this.manager.emit('queueUpdate', this, UpdateType.REPEAT);
 	}
 }
 

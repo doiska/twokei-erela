@@ -3,7 +3,8 @@ import { Collection } from "discord.js";
 import { dataSource } from "@client/DataSource";
 
 import { Guild as GuildEX, GuildData } from "@entities/Guild";
-import { CoreLogger, DatabaseLogger } from "@loggers/index";
+import { DatabaseLogger } from "@loggers/index";
+import _ from "lodash";
 
 class GuildController {
 
@@ -11,7 +12,7 @@ class GuildController {
 	private cache: Collection<string, GuildData> = new Collection<string, GuildData>();
 
 	public async load(id: string) {
-		if(this.loading.includes(id)) {
+		if (this.loading.includes(id)) {
 			DatabaseLogger.info(`Guild ${id} is already loading...`);
 			return;
 		}
@@ -26,13 +27,13 @@ class GuildController {
 				.getMongoRepository(GuildEX)
 				.findOne({ where: { id } });
 
-			if(res) {
+			if (res) {
 				this.cache.set(id, res);
 			}
 
 			DatabaseLogger.info(`Guild ${id} loaded!`);
-			return res;
-		} catch(e) {
+			return res ?? undefined;
+		} catch (e) {
 			DatabaseLogger.info(`Guild ${id} failed!`, e);
 		} finally {
 			this.loading.splice(target, 1);
@@ -41,7 +42,7 @@ class GuildController {
 
 	public async get(id: string) {
 
-		if(this.cache.get(id))
+		if (this.cache.get(id))
 			return this.cache.get(id);
 
 		return this.load(id);
@@ -49,7 +50,7 @@ class GuildController {
 
 	public syncGet(id: string) {
 
-		if(!this.cache.get(id)) {
+		if (!this.cache.get(id)) {
 			this.load(id);
 		}
 
@@ -65,7 +66,7 @@ class GuildController {
 	public async getGuildLocale(id: string) {
 		const guild = await this.get(id);
 
-		if(guild)
+		if (guild)
 			return guild.language;
 
 		return "en";
@@ -73,25 +74,25 @@ class GuildController {
 
 	public async save(data: Partial<GuildData>) {
 
-		if(!data.id) return;
+		if (!data.id)
+			throw new Error("Guild ID is required!");
 
-		const current = await this.get(data.id) || {};
+		const current: GuildData | undefined = await this.get(data.id);
 
-		this.cache.set(data.id, {
-			id: data.id,
-			...current,
-			...data
-		});
+		const merged = _.merge({ id: data.id }, current ?? {}, data);
 
-		return dataSource
+		this.cache.set(data.id, merged);
+
+		// const flat = flattenKeys(data);
+
+		return await dataSource
 			.getMongoRepository(GuildEX)
 			.findOneAndUpdate(
 				{ id: data.id },
-				{ $set : data },
+				{ $set: merged },
 				{ upsert: true }
 			);
 	}
-
 }
 
 export default new GuildController();

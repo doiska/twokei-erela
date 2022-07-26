@@ -1,4 +1,5 @@
 {
+	"GENERIC_ERROR": "Ops, something went wrong!",
 	"BUTTON_STOP": "Stop",
 	"BUTTON_PREVIOUS": "Previous",
 	"BUTTON_PAUSE": "Pause",
@@ -10,7 +11,7 @@
 	"BUTTON_AUTO_PLAY": "Auto Play",
 	"BUTTON_SAVE_PLAYLIST": "Save playlist",
 	"BUTTON_LOAD_PLAYLIST": "Load playlist",
-
+	"BUTTON_IMAGE_EDITOR": "Edit image",
 	"EMBED_TITLE": "**No song playing**",
 	"EMBED_HOW_TO_USE": "\n\n**✌ How to use:**\n- Just type the name or link, no command needed.\n- You can select tracks by clicking on menu below.\n- Uncheck the current track will pause the queue.",
 	"EMBED_HELP_DEV": "\n\n**😼 Support the development**\n- [**Buy me a coffee**](https://ko-fi.com/doiska)\n- [**Invite Twokei to other servers**](https://twokei.store)",
@@ -43,5 +44,7 @@
 
 	"ERROR_OCCURRED": "An error occurred, please try again. If the problem persists, contact the developer.\n Maybe the song is not available in the current region.",
 	"ERROR_PLAYLIST": "You have added a Mix, it may not load all songs.\n To search related, enable **Auto play**.",
-	"NO_RESULTS_FOUND": "No results found."
+	"NO_RESULTS_FOUND": "No results found.",
+	"IMAGE_EDITOR_TITLE": "Edit image",
+	"IMAGE_ERROR": "An error occurred, insert a valid image link.",
 }

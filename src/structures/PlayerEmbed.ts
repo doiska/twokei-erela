@@ -10,7 +10,7 @@ import { Player } from "erela.js";
 import { MessageActionRowComponentBuilder } from "@discordjs/builders";
 import { Updatable } from "@player/controllers/PlayerEmbedController";
 import { parseBuilderToComponent } from "@utils/Discord";
-import { createEmbed, createMenu, createButtons } from "@utils/Embed";
+import { createEmbed, createMenu, createButtons } from "@utils/DefaultEmbed";
 
 export type ButtonRow = {
 	rowId: string;

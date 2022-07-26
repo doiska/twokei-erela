@@ -1,4 +1,4 @@
-import { Interaction } from "discord.js";
+import { Interaction, InteractionType, SelectMenuInteraction } from "discord.js";
 
 import Twokei from "@client/Twokei";
 
@@ -8,8 +8,10 @@ import { RowID } from "@utils/CustomId";
 
 registerEvent("interactionCreate", async (interaction: Interaction) => {
 
-	if(!interaction.isSelectMenu() || !interaction.guild || interaction.customId !== RowID.PRIMARY_MENU)
+	if(interaction.type !== InteractionType.MessageComponent || !interaction.guild || interaction.customId !== RowID.PRIMARY_MENU)
 		return;
+
+	const menu = interaction as SelectMenuInteraction;
 
 	if(!PlayerEmbedController.isPlaying(interaction.guild.id)) return;
 
@@ -21,12 +23,12 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 
 	player.set('waiting', true);
 
-	if(interaction.values.length === 0) {
+	if(menu.values.length === 0) {
 		player.pause(true);
 	} else {
 		player.pause(false);
 
-		const [songId] = interaction.values;
+		const [songId] = menu.values;
 
 		if(songId.startsWith("next-")) {
 			try {
@@ -43,8 +45,6 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 		}
 	}
 
-	await interaction.deferReply();
-	await interaction.deleteReply();
-
+	await interaction.deferReply().then(() => interaction.deleteReply());
 	player.set('waiting', false);
 });

@@ -20,7 +20,10 @@ module.exports = {
 	"rules": {
 		"indent": [
 			"error",
-			"tab"
+			"tab",
+			{
+				"SwitchCase": 1
+			}
 		],
 		"import-helpers/order-imports": [
 			"warn",

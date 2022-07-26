@@ -1,12 +1,15 @@
-import { APIEmbed, Colors, SelectMenuBuilder, ButtonBuilder, ButtonStyle, MessageOptions } from "discord.js";
+import { Colors, SelectMenuBuilder, ButtonBuilder, ButtonStyle, MessageOptions, APIEmbed, EmbedData } from "discord.js";
 
 import Translator from "@client/Translator";
 
+import GuildController from "@controllers/GuildController";
 import { MenuRow, ButtonRow } from "@structures/PlayerEmbed";
 import { RowID, ButtonID } from "@utils/CustomId";
 import { parseBuilderToComponent } from "@utils/Discord";
 
-export const createEmbed = async (guildId?: string): Promise<APIEmbed> => {
+const DEFAULT_MEDIA_IMAGE = 'https://cdn.discordapp.com/attachments/945719334402134016/970477237700812810/df661b213ee05573007418bcd5cca532.gif';
+
+export const createEmbed = async (guildId?: string): Promise<EmbedData> => {
 
 	const [title, ...rest] = await Translator.massTranslateGuild([
 		"EMBED_TITLE",
@@ -17,6 +20,10 @@ export const createEmbed = async (guildId?: string): Promise<APIEmbed> => {
 
 	const footer = await Translator.translateGuild("EMBED_FOOTER", guildId);
 
+	const guild = guildId ? await GuildController.get(guildId) : undefined;
+	
+	const image = guild?.media?.image ?? DEFAULT_MEDIA_IMAGE;
+
 	return {
 		title,
 		description: rest.join(""),
@@ -26,7 +33,7 @@ export const createEmbed = async (guildId?: string): Promise<APIEmbed> => {
 			url: "https://twitter.com/two2kei",
 		},
 		image: {
-			url: "https://cdn.discordapp.com/attachments/945719334402134016/970477237700812810/df661b213ee05573007418bcd5cca532.gif",
+			url: image,
 		},
 		footer: {
 			text: footer,
@@ -56,8 +63,8 @@ export const createMenu = async (guildId?: string): Promise<MenuRow> => {
 
 export const createButtons = async (guildId?: string): Promise<ButtonRow> => {
 
-	const [languageSwitch, loadPlaylist] = await Translator.massTranslateGuild([
-		"EMBED_LANGUAGE_SWITCH", "BUTTON_LOAD_PLAYLIST"
+	const [languageSwitch, loadPlaylist, imageEditor] = await Translator.massTranslateGuild([
+		"EMBED_LANGUAGE_SWITCH", "BUTTON_LOAD_PLAYLIST", "BUTTON_IMAGE_EDITOR"
 	], guildId);
 
 	return {
@@ -69,9 +76,13 @@ export const createButtons = async (guildId?: string): Promise<ButtonRow> => {
 				.setStyle(ButtonStyle.Secondary)
 				.setLabel(languageSwitch),
 			new ButtonBuilder()
-				.setCustomId("cid_load_playlist")
+				.setCustomId(ButtonID.LOAD_PLAYLIST)
 				.setStyle(ButtonStyle.Secondary)
 				.setLabel(loadPlaylist),
+			new ButtonBuilder()
+				.setCustomId(ButtonID.EDIT_IMAGE)
+				.setStyle(ButtonStyle.Secondary)
+				.setLabel(imageEditor),
 		]
 	};
 };
@@ -86,7 +97,7 @@ export const createDefaultMessage = async (guildId?: string): Promise<MessageOpt
 	const menu = parseBuilderToComponent(menuBuilder);
 
 	return {
-		embeds: [embed],
+		embeds: [embed as APIEmbed],
 		components: [menu, buttons],
 	};
 };
