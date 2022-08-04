@@ -1,17 +1,15 @@
-import { Message, VoiceBasedChannel, EmbedBuilder, Colors } from "discord.js";
+import { Message, VoiceBasedChannel } from "discord.js";
 
-import Translator from "@client/Translator";
+import { translateGuild } from "@client/Translator";
 import Twokei from "@client/Twokei";
 
-import { UserRateLimit } from "@controllers/UserRateLimit";
 import { PlayerLogger } from "@loggers/index";
-import PlayerEmbedController from "@player/controllers/PlayerEmbedController";
+import { PlayerEmbedController } from "@player/controllers/PlayerEmbedController";
+import { sendTemporaryMessage, embed } from "@utils/Discord";
 
 export async function play(content: string, message: Message, voiceChannel: VoiceBasedChannel) {
 
-	if(!message.guild || !message.member) return;
-
-	UserRateLimit.add(message.member.id);
+	if (!message.guild || !message.member) return;
 
 	console.time(`search`)
 
@@ -21,19 +19,11 @@ export async function play(content: string, message: Message, voiceChannel: Voic
 
 	console.timeEnd(`search`)
 
-	PlayerLogger.info(`Search results: ${tracks.length}`, {  });
+	PlayerLogger.info(`Search results: ${tracks.length}`, {});
 
-	if(loadType === "NO_MATCHES" || loadType === "LOAD_FAILED") {
-		const notFoundMessage = await Translator.translateGuild("NO_RESULTS_FOUND", message.guild.id);
-
-		message.channel.send({ embeds: [new EmbedBuilder().setDescription(notFoundMessage).setColor(Colors.DarkButNotBlack)] }).then((temp) => {
-			setTimeout(() => {
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
-				temp.delete().catch(() => {});
-			}, 3000)
-		});
-
-		UserRateLimit.remove(message.member.id);
+	if (loadType === "NO_MATCHES" || loadType === "LOAD_FAILED") {
+		const [notFoundMessage] = await translateGuild("NO_RESULTS_FOUND", message.guild.id);
+		sendTemporaryMessage(message.channel, { embeds: [embed(notFoundMessage)] });
 		return;
 	}
 
@@ -46,18 +36,17 @@ export async function play(content: string, message: Message, voiceChannel: Voic
 		selfDeafen: true,
 	});
 
-	if(loadType === "SEARCH_RESULT" || loadType === "TRACK_LOADED")
+	if (loadType === "SEARCH_RESULT" || loadType === "TRACK_LOADED")
 		player.add(tracks[0]);
 	else
 		player.add(tracks);
 
-	if(!PlayerEmbedController.isPlaying(player.guild))
+	if (!PlayerEmbedController.isPlaying(player.guild))
 		await PlayerEmbedController.init(player);
 
 	console.log(`Should be playing: ${!player.playing && !player.paused && !player.queue.size}`);
 
-	if(!player.playing && !player.paused && !player.queue.size) {
-
+	if (!player.playing && !player.paused && !player.queue.size) {
 		console.time('connect');
 		player.connect();
 		console.timeEnd("connect")
@@ -66,6 +55,4 @@ export async function play(content: string, message: Message, voiceChannel: Voic
 	}
 
 	console.timeEnd("play")
-
-	UserRateLimit.remove(message.member.id);
 }

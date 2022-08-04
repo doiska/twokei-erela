@@ -19,7 +19,6 @@ const walk = (dir: string) => {
 	};
 
 	run(dir);
-
 	return paths;
 };
 

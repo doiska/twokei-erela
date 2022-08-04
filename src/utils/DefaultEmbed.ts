@@ -1,27 +1,26 @@
 import { Colors, SelectMenuBuilder, ButtonBuilder, ButtonStyle, MessageOptions, APIEmbed, EmbedData } from "discord.js";
 
-import Translator from "@client/Translator";
+import { translateGuild } from "@client/Translator";
 
 import GuildController from "@controllers/GuildController";
-import { MenuRow, ButtonRow } from "@structures/PlayerEmbed";
-import { RowID, ButtonID } from "@utils/CustomId";
-import { parseBuilderToComponent } from "@utils/Discord";
+import { Row } from "@structures/PlayerEmbed";
+import { RowID, ButtonID,  } from "@utils/CustomId";
+import { builderToComponent } from "@utils/Discord";
 
 const DEFAULT_MEDIA_IMAGE = 'https://cdn.discordapp.com/attachments/945719334402134016/970477237700812810/df661b213ee05573007418bcd5cca532.gif';
 
 export const createEmbed = async (guildId?: string): Promise<EmbedData> => {
 
-	const [title, ...rest] = await Translator.massTranslateGuild([
+	const [title, ...rest] = await translateGuild([
 		"EMBED_TITLE",
 		"EMBED_HOW_TO_USE",
 		"EMBED_HELP_DEV",
 		"EMBED_NEW_FEATURES",
 	], guildId);
 
-	const footer = await Translator.translateGuild("EMBED_FOOTER", guildId);
+	const [footer] = await translateGuild("EMBED_FOOTER", guildId);
 
-	const guild = guildId ? await GuildController.get(guildId) : undefined;
-	
+	const guild = await GuildController.get(guildId);
 	const image = guild?.media?.image ?? DEFAULT_MEDIA_IMAGE;
 
 	return {
@@ -41,8 +40,8 @@ export const createEmbed = async (guildId?: string): Promise<EmbedData> => {
 	};
 };
 
-export const createMenu = async (guildId?: string): Promise<MenuRow> => {
-	const addSongText = await Translator.translateGuild("EMBED_ADD_SONG", guildId);
+export const createMenu = async (guildId?: string): Promise<Row> => {
+	const [addSongText] = await translateGuild("EMBED_ADD_SONG", guildId);
 
 	return {
 		rowId: RowID.PRIMARY_MENU,
@@ -61,9 +60,9 @@ export const createMenu = async (guildId?: string): Promise<MenuRow> => {
 	};
 };
 
-export const createButtons = async (guildId?: string): Promise<ButtonRow> => {
+export const createButtons = async (guildId?: string): Promise<Row> => {
 
-	const [languageSwitch, loadPlaylist, imageEditor] = await Translator.massTranslateGuild([
+	const [languageSwitch, loadPlaylist, imageEditor] = await translateGuild([
 		"EMBED_LANGUAGE_SWITCH", "BUTTON_LOAD_PLAYLIST", "BUTTON_IMAGE_EDITOR"
 	], guildId);
 
@@ -93,11 +92,11 @@ export const createDefaultMessage = async (guildId?: string): Promise<MessageOpt
 	const { components: menuBuilder } = await createMenu(guildId);
 
 	const embed = await createEmbed(guildId);
-	const buttons = parseBuilderToComponent(buttonBuilder);
-	const menu = parseBuilderToComponent(menuBuilder);
+
+	const rows = [menuBuilder, buttonBuilder].map(builderToComponent);
 
 	return {
 		embeds: [embed as APIEmbed],
-		components: [menu, buttons],
+		components: rows,
 	};
 };

@@ -1,12 +1,11 @@
 import { Collection, ButtonBuilder, ButtonStyle, GuildTextBasedChannel } from "discord.js";
 import { Player } from "erela.js";
 
-import { ChannelController } from "@controllers/ChannelController";
 import { createPrimaryButtons, createSecondaryButtons } from "@player/data/Buttons";
 import { createPlayerMenu } from "@player/data/PlayerEmbedData";
 import PlayerEmbed from "@structures/PlayerEmbed";
+import { fetchChannel } from "@useCases/mainChannel/fetchChannel";
 import { RowID } from "@utils/CustomId";
-
 
 export type Updatable = {
 	embed?: boolean;
@@ -14,35 +13,32 @@ export type Updatable = {
 	button?: boolean;
 }
 
-class PlayerEmbedController {
+class _PlayerEmbedController {
 
 	private embeds = new Collection<string, PlayerEmbed>();
 
 	public async init(player: Player) {
+		const fetched = await fetchChannel(player.guild);
 		
-		const message = await ChannelController.getMediaMessage(player.guild);
-		
-		if(!message)
+		if(!fetched || !fetched.channel || !fetched.message)
 			return;
 
-		const fetched = (await message.channel.messages.fetch({ limit: 100 })).filter(m => m.id !== message.id);
-		(message.channel as GuildTextBasedChannel).bulkDelete(fetched, true);
+		const { channel, message } = fetched;
+
+		const deletable = (await channel.messages.fetch({ limit: 100 })).filter(m => m.id !== message.id);
+		(message.channel as GuildTextBasedChannel).bulkDelete(deletable, true);
 		
 		this.embeds.set(player.guild, new PlayerEmbed(message, player));
 	}
 
 	public async reset(player: Player) {
 		const currentEmbed = this.embeds.get(player.guild);
+
 		if (!currentEmbed)
 			return;
 
 		await currentEmbed.reset();
-
 		this.embeds.delete(player.guild);
-	}
-
-	public getEmbed(guildId: string) {
-		return this.embeds.get(guildId);
 	}
 
 	public isPlaying(guildId: string) {
@@ -91,6 +87,6 @@ class PlayerEmbedController {
 	}
 }
 
-const playerEmbedController = new PlayerEmbedController();
+const PlayerEmbedController = new _PlayerEmbedController();
 
-export default playerEmbedController;
+export { PlayerEmbedController };
