@@ -3,32 +3,25 @@ import {
 	EmbedData,
 	SelectMenuBuilder,
 	ActionRowBuilder,
-	ButtonBuilder, APIEmbed, APIButtonComponent
+	ButtonBuilder, APIEmbed
 } from "discord.js";
 import { Player } from "erela.js";
 
 import { MessageActionRowComponentBuilder } from "@discordjs/builders";
-import { Updatable } from "@player/controllers/PlayerEmbedController";
-import { parseBuilderToComponent } from "@utils/Discord";
 import { createEmbed, createMenu, createButtons } from "@utils/DefaultEmbed";
+import { builderToComponent } from "@utils/Discord";
 
-export type ButtonRow = {
+export type Row = {
 	rowId: string;
 	position: number;
-	components: ButtonBuilder[];
-}
-
-export type MenuRow = {
-	rowId: string;
-	position: number;
-	components: SelectMenuBuilder;
+	components: SelectMenuBuilder | ButtonBuilder[];
 }
 
 export default class PlayerEmbed {
 
 	private readonly message: Message;
 
-	private rows: (MenuRow | ButtonRow)[] = [];
+	private rows: Row[] = [];
 
 	private embed: EmbedData = {};
 	private player: Player;
@@ -47,27 +40,34 @@ export default class PlayerEmbed {
 		};
 	}
 
-	public addComponent(component: MenuRow | ButtonRow) {
+	public addComponent(component: Row) {
 		this.rows[component.position] = component;
 	}
 
-	public parseComponents(): ActionRowBuilder<MessageActionRowComponentBuilder>[] {
-		const components = this.rows;
-
-		components.sort((a, b) => a.position - b.position);
-		return components.map(c => parseBuilderToComponent(c.components));
-	}
-
 	public async reset() {
-		this.embed = await createEmbed(this.player.guild);
-		this.rows = [await createMenu(this.player.guild), await createButtons(this.player.guild)];
+
+		const [
+			embed,
+			menu,
+			buttons
+		] = await Promise.all([
+			createEmbed(this.player.guild),
+			createMenu(this.player.guild),
+			createButtons(this.player.guild)
+		]);
+
+		this.embed = embed;
+		this.rows = [menu, buttons];
+
 		return this.deferUpdate();
 	}
 
 	public async deferUpdate() {
+		const components = this.rows.map(row => builderToComponent(row.components));
+
 		return this.message.edit({
 			embeds: [this.embed as APIEmbed],
-			components: this.parseComponents()
+			components: components
 		});
 	}
 }
