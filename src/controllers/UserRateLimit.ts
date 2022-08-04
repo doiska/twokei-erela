@@ -1,5 +1,7 @@
 import { Collection } from "discord.js";
 
+import { RateLimitManager } from "@sapphire/ratelimits";
+
 export const MAX_RATE_LIMIT = 2;
 
 class _UserRateLimit {
@@ -39,3 +41,6 @@ class _UserRateLimit {
 }
 
 export const UserRateLimit = new _UserRateLimit();
+
+export const PlayerLimitManager = new RateLimitManager(3000);
+export const InteractionLimitManager = new RateLimitManager(2000, 2);
