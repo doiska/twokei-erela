@@ -5,14 +5,20 @@
 			"@client/*": [
 				"./client/*"
 			],
+			"@typings/*": [
+				"./typings/*"
+			],
+			"@useCases/*": [
+				"./useCases/*"
+			],
 			"@controllers/*": [
 				"./controllers/*"
 			],
 			"@config/*": [
 				"./config/*"
 			],
-			"@entities/*": [
-				"./entities/*"
+			"@models/*": [
+				"./models/*"
 			],
 			"@events/*": [
 				"./events/*"
