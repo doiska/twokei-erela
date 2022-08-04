@@ -3,11 +3,10 @@ import { InteractionType } from 'discord.js';
 
 import Twokei from "@client/Twokei";
 
-import { UserRateLimit } from "@controllers/UserRateLimit";
-import PlayerEmbedController from "@player/controllers/PlayerEmbedController";
+import { InteractionLimitManager } from "@controllers/UserRateLimit";
+import { PlayerEmbedController } from "@player/controllers/PlayerEmbedController";
 import { registerEvent } from "@structures/EventHandler";
 import { ButtonID } from "@utils/CustomId";
-
 
 registerEvent("interactionCreate", async (interaction: Interaction) => {
 
@@ -20,10 +19,12 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 	if (!Object.values(ButtonID).includes(button.customId))
 		return;
 
-	if (UserRateLimit.has(button.user.id))
+	const userInteractionLimit = InteractionLimitManager.acquire(`button-${interaction.user.id}`);
+
+	if (userInteractionLimit.limited)
 		return;
 
-	UserRateLimit.add(button.user.id, true);
+	userInteractionLimit.consume();
 
 	if (!PlayerEmbedController.isPlaying(button.guild.id))
 		return;

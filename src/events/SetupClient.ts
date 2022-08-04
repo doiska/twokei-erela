@@ -2,9 +2,9 @@ import { Guild } from "discord.js";
 
 import Twokei from "@client/Twokei";
 
-import { ChannelController } from "@controllers/ChannelController";
 import { CoreLogger } from "@loggers/index";
 import { registerEvent } from "@structures/EventHandler";
+import { createChannel } from "@useCases/mainChannel/createChannel";
 
 registerEvent("ready", async () => {
 	Twokei.on("raw", (d) => Twokei.playerManager.updateVoiceState(d));
@@ -14,5 +14,5 @@ registerEvent("ready", async () => {
 });
 
 registerEvent("guildCreate", async (guild: Guild) => {
-	await ChannelController.createChannel(guild);
+	await createChannel(guild);
 });

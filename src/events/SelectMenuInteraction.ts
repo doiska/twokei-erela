@@ -2,7 +2,8 @@ import { Interaction, InteractionType, SelectMenuInteraction } from "discord.js"
 
 import Twokei from "@client/Twokei";
 
-import PlayerEmbedController from "@player/controllers/PlayerEmbedController";
+import { PlayerLimitManager } from "@controllers/UserRateLimit";
+import { PlayerEmbedController } from "@player/controllers/PlayerEmbedController";
 import { registerEvent } from "@structures/EventHandler";
 import { RowID } from "@utils/CustomId";
 
@@ -11,7 +12,7 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 	if(interaction.type !== InteractionType.MessageComponent || !interaction.guild || interaction.customId !== RowID.PRIMARY_MENU)
 		return;
 
-	const menu = interaction as SelectMenuInteraction;
+	const { values } = interaction as SelectMenuInteraction;
 
 	if(!PlayerEmbedController.isPlaying(interaction.guild.id)) return;
 
@@ -19,16 +20,16 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 
 	if(!player) return;
 
-	if(player.get('waiting')) return;
+	const playerLimit = PlayerLimitManager.acquire(`menu-${player.guild}`);
 
-	player.set('waiting', true);
+	if(playerLimit.limited) return;
 
-	if(menu.values.length === 0) {
+	if(values.length === 0) {
 		player.pause(true);
 	} else {
 		player.pause(false);
 
-		const [songId] = menu.values;
+		const [songId] = values;
 
 		if(songId.startsWith("next-")) {
 			try {
@@ -45,6 +46,6 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 		}
 	}
 
+	playerLimit.consume();
 	await interaction.deferReply().then(() => interaction.deleteReply());
-	player.set('waiting', false);
 });

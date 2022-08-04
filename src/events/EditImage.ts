@@ -1,11 +1,13 @@
-import { Interaction, InteractionType, ButtonInteraction, ModalSubmitInteraction, GuildMember, PermissionsBitField } from "discord.js";
+import { Interaction, InteractionType, ButtonInteraction, GuildMember } from "discord.js";
 
-import Translator from "@client/Translator";
+import { translateGuild } from "@client/Translator";
 
-import { ChannelController } from "@controllers/ChannelController";
 import GuildController from "@controllers/GuildController";
 import { registerEvent } from "@structures/EventHandler";
+import { fetchChannel } from "@useCases/mainChannel/fetchChannel";
+import { resetMediaMessage } from "@useCases/mainChannel/resetMedia";
 import { ButtonID } from "@utils/CustomId";
+import { embed, fastEmbed, reply } from "@utils/Discord";
 
 import { createImageModal } from "../modals/ImageModal";
 
@@ -20,8 +22,12 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 
 	if (button.customId !== ButtonID.EDIT_IMAGE) return;
 
-	if(!(interaction.member as GuildMember).permissions.has('ManageMessages'))
-		return;
+	const author = button.member as GuildMember;
+
+	if (!author.permissions.has("ManageMessages")) {
+		const [notEnoughPermissions] = await translateGuild(author.guild.id, "NO_PERMISSIONS");
+		return interaction.reply({ embeds: [embed(notEnoughPermissions)] })
+	}
 
 	interaction.showModal(createImageModal());
 });
@@ -29,15 +35,16 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 registerEvent("interactionCreate", async (interaction: Interaction) => {
 	if (interaction.type !== InteractionType.ModalSubmit) return;
 	if (interaction.customId !== 'image-modal' || !interaction.guildId) return;
+	if (!interaction.guildId || !interaction.guild) return;
 
 	const image = interaction.fields.getTextInputValue('image-input');
 
 	if (!image)
 		return;
 
-	const message = await ChannelController.getMediaMessage(interaction.guildId);
+	const response = await fetchChannel(interaction.guildId);
 
-	if (!message)
+	if (!response)
 		return;
 
 	const isImage = image.match(/\.(png|jpg|jpeg|gif)$/i);
@@ -46,12 +53,14 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 		genericError,
 		imageError,
 		imageSuccess
-	] = await Translator.massTranslateGuild(['GENERIC_ERROR', 'IMAGE_ERROR', 'IMAGE_UPDATED'], interaction.guildId)
+	] = await translateGuild(['GENERIC_ERROR', 'IMAGE_ERROR', 'IMAGE_UPDATED'], interaction.guildId)
 
 	if (!isImage)
-		return interaction.reply(imageError);
+		return reply(interaction, fastEmbed(imageError));
 
-	GuildController.save({ id: interaction.guildId, media: { image } })
-		.then(() => interaction.reply(imageSuccess))
-		.catch(() => interaction.reply(genericError))
+	await GuildController.save({ id: interaction.guildId, media: { image } })
+		.then(async () => reply(interaction, fastEmbed(imageSuccess)))
+		.catch(() => reply(interaction, fastEmbed(genericError)));
+
+	await resetMediaMessage(interaction.guildId);
 });

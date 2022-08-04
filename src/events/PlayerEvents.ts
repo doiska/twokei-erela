@@ -1,7 +1,7 @@
 import Twokei from "@client/Twokei";
 
 import { PlayerEventLogger } from "@loggers/index";
-import PlayerEmbedController from "@player/controllers/PlayerEmbedController";
+import { PlayerEmbedController } from "@player/controllers/PlayerEmbedController";
 import { registerEvent } from "@structures/EventHandler";
 import { UpdateType } from "@structures/ExtendedPlayer";
 
@@ -10,16 +10,14 @@ registerEvent("ready", () => {
 	const playerManager = Twokei.playerManager;
 
 	playerManager.on("nodeConnect", (node) =>
-		PlayerEventLogger.info(`NODE CONNECT: ${node.options.host} ${node.options.port}`)
-	);
+		PlayerEventLogger.info(`NODE CONNECT: ${node.options.host} ${node.options.port}`));
 
 	playerManager.on("playerDestroy", async (player) => {
 		PlayerEventLogger.info(`Queue ended for guild ${player.guild}`);
 		await PlayerEmbedController.reset(player);
 	})
 
-	playerManager.on("trackAdd", async (player, track) => {
-		PlayerEventLogger.info(`TRACK ADD:`, track);
+	playerManager.on("trackAdd", async (player) => {
 		await PlayerEmbedController.deferUpdate(player, { menu: true });
 	})
 
