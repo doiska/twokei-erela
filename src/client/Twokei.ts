@@ -10,11 +10,13 @@ import ExtendedNode from "@structures/ExtendedNode";
 import ExtendedPlayer from "@structures/ExtendedPlayer";
 import walk from "@utils/Walk";
 
+import { I18n } from "i18n";
 import path from "path";
 
 export class ExtendedClient extends Client {
 
 	public playerManager: Manager;
+	public translator: I18n;
 
 	constructor(options?: ClientOptions) {
 		super({
@@ -44,6 +46,17 @@ export class ExtendedClient extends Client {
 			}))
 		}
 
+		this.translator = new I18n();
+
+		this.translator.configure({
+			locales: ["en", "pt"],
+			defaultLocale: "en",
+			autoReload: true,
+			directory: path.join(__dirname, "..", "locales"),
+			syncFiles: true,
+			logWarnFn: (msg: string) => CoreLogger.warn(msg),
+			logErrorFn: (msg: string) => CoreLogger.error(msg),
+		});
 
 		this.playerManager = new Manager({
 			shards: 5,
