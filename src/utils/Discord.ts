@@ -1,33 +1,29 @@
 import {
 	Guild,
-	ChannelType,
-	Message,
 	MessageOptions,
 	TextBasedChannel,
 	EmbedData,
 	EmbedBuilder,
 	SelectMenuBuilder,
 	ButtonBuilder,
-	ActionRowBuilder, InteractionReplyOptions, MessageComponentInteraction, ModalSubmitInteraction, NonThreadGuildBasedChannel
+	ActionRowBuilder, InteractionReplyOptions, MessageComponentInteraction, ModalSubmitInteraction, Interaction, CommandInteraction
 } from "discord.js";
 
-import Twokei from "@client/Twokei";
-
 import { MessageActionRowComponentBuilder } from "@discordjs/builders";
+import { CoreLogger } from "@loggers/index";
 
 
 export const getChannelById = async (id: string, guild: Guild): Promise<TextBasedChannel | undefined> => {
 	return guild.channels.fetch(id).then(c => c as TextBasedChannel).catch(() => undefined);
 }
 
-export const sendTemporaryMessage = (channel: TextBasedChannel, message: MessageOptions, timeout = 5000) => {
-	channel.send(message).then(m => {
-		setTimeout(() => {
-			m.delete().catch(() => {
-				// ignore
-			});
-		}, timeout)
-	});
+export const sendTemporaryMessage = async (channel: TextBasedChannel, messageContent: MessageOptions, timeout = 5000) => {
+
+	const message = await channel.send(messageContent);
+
+	setTimeout(() => message.delete(), timeout);
+
+	return message;
 }
 
 export const reply = (interaction: ModalSubmitInteraction | MessageComponentInteraction, reply: InteractionReplyOptions, timeout = 5000) => {
@@ -49,4 +45,11 @@ export const embed = (embedOptions?: string | EmbedData) => {
 export const fastEmbed = (embedOptions?: string | EmbedData) => {
 	const builder = embed(embedOptions);
 	return { embeds: [builder] }
+}
+
+export const replyThenDelete = (interaction: MessageComponentInteraction | ModalSubmitInteraction) => {
+
+	if(!interaction.isRepliable()) return;
+
+	interaction.deferReply().then(() => interaction.deleteReply()).catch(() => CoreLogger.error("Failed to delete reply \"replyThenDelete\"."));
 }

@@ -3,7 +3,7 @@ import { User } from "@models/User";
 
 import { DataSource } from "typeorm";
 
-export const dataSource = new DataSource({
+export const XiaoDS = new DataSource({
 	type: "mongodb",
 	url: process.env.MONGODB_URI,
 	useNewUrlParser: true,
@@ -18,6 +18,4 @@ export const dataSource = new DataSource({
 	migrations: [],
 });
 
-export const initializeDataSource = () => {
-	return dataSource.initialize();
-};
+export const initializeDataSource = () => XiaoDS.initialize();

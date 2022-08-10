@@ -11,11 +11,11 @@
 			"@useCases/*": [
 				"./useCases/*"
 			],
-			"@controllers/*": [
-				"./controllers/*"
-			],
 			"@config/*": [
 				"./config/*"
+			],
+			"@modals/*": [
+				"./modals/*"
 			],
 			"@models/*": [
 				"./models/*"
@@ -23,8 +23,8 @@
 			"@events/*": [
 				"./events/*"
 			],
-			"@player/*": [
-				"./player/*"
+			"@components/*": [
+				"./components/*"
 			],
 			"@structures/*": [
 				"./structures/*"

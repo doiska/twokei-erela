@@ -1,4 +1,4 @@
-import { ClientEvents, Message } from "discord.js";
+import { ClientEvents } from "discord.js";
 
 import Twokei from "@client/Twokei";
 

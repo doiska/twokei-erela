@@ -1,7 +1,7 @@
 export const RowID = {
-	PRIMARY_MENU: "1-primary-menu",
-	SECONDARY_MENU: "2-secondary-menu",
-	THIRD_MENU: "3-third-menu",
+	SONG_MENU: "1-song-menu",
+	FIRST_BUTTON_ROW: "1-first-button-row",
+	SECOND_BUTTON_ROW: "2-second-button-row",
 };
 
 export const ButtonID = {
@@ -17,7 +17,9 @@ export const ButtonID = {
 	SAVE_PLAYLIST: "save-playlist-button",
 	LOAD_PLAYLIST: "load-playlist-button",
 
-	LANGUAGE_SWITCH: "language-switch-button",
+	LANGUAGE_SWITCH: "language-switch-button-",
 
 	EDIT_IMAGE: "edit-image-button",
+
+	USE_DJ_ROLE: "use-role-name-button",
 };

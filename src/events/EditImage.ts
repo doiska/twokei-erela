@@ -1,9 +1,9 @@
 import { Interaction, InteractionType, ButtonInteraction, GuildMember } from "discord.js";
 
-import { translateGuild } from "@client/Translator";
+import { translate } from "@client/Translator";
 
-import GuildController from "@controllers/GuildController";
 import { registerEvent } from "@structures/EventHandler";
+import { saveGuild } from "@useCases/guildCreation/saveGuild";
 import { fetchChannel } from "@useCases/mainChannel/fetchChannel";
 import { resetMediaMessage } from "@useCases/mainChannel/resetMedia";
 import { ButtonID } from "@utils/CustomId";
@@ -25,7 +25,7 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 	const author = button.member as GuildMember;
 
 	if (!author.permissions.has("ManageMessages")) {
-		const [notEnoughPermissions] = await translateGuild(author.guild.id, "NO_PERMISSIONS");
+		const [notEnoughPermissions] = await translate(author.guild.id, "NO_PERMISSIONS");
 		return interaction.reply({ embeds: [embed(notEnoughPermissions)] })
 	}
 
@@ -53,12 +53,12 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 		genericError,
 		imageError,
 		imageSuccess
-	] = await translateGuild(['GENERIC_ERROR', 'IMAGE_ERROR', 'IMAGE_UPDATED'], interaction.guildId)
+	] = await translate(['GENERIC_ERROR', 'IMAGE_ERROR', 'IMAGE_UPDATED'], interaction.guildId)
 
 	if (!isImage)
 		return reply(interaction, fastEmbed(imageError));
 
-	await GuildController.save({ id: interaction.guildId, media: { image } })
+	await saveGuild({ id: interaction.guildId, media: { image } })
 		.then(async () => reply(interaction, fastEmbed(imageSuccess)))
 		.catch(() => reply(interaction, fastEmbed(genericError)));
 

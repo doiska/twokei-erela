@@ -1,13 +1,13 @@
-import { Client, ClientOptions } from "discord.js";
+import { Client, ClientOptions, Collection } from "discord.js";
 import { Manager, Structure, Payload } from "erela.js";
 import Spotify from "erela.js-spotify";
 
-import { initializeDataSource } from "@client/DataSource";
+import { initializeDataSource } from "@client/XiaoDS";
 
 import { mainConfig } from "@config/main";
 import { CoreLogger } from "@loggers/index";
-import ExtendedNode from "@structures/ExtendedNode";
 import ExtendedPlayer from "@structures/ExtendedPlayer";
+import PlayerEmbed from "@structures/PlayerEmbed";
 import walk from "@utils/Walk";
 
 import { I18n } from "i18n";
@@ -17,6 +17,7 @@ export class ExtendedClient extends Client {
 
 	public playerManager: Manager;
 	public translator: I18n;
+	public embeds: Collection<string, PlayerEmbed> = new Collection();
 
 	constructor(options?: ClientOptions) {
 		super({
@@ -30,10 +31,7 @@ export class ExtendedClient extends Client {
 			...options
 		});
 
-		// this.events = new Collection();
-
 		Structure.extend("Player", () => ExtendedPlayer);
-		Structure.extend("Node", () => ExtendedNode);
 
 		const plugins = [];
 
@@ -59,13 +57,11 @@ export class ExtendedClient extends Client {
 		});
 
 		this.playerManager = new Manager({
-			shards: 5,
 			nodes: mainConfig.lavalink.filter(n => n?.active ?? true),
 			plugins: plugins,
 			send(id: string, payload: Payload) {
 				const guild = Twokei.guilds.cache.get(id);
-				if (guild)
-					guild.shard.send(payload);
+				if (guild) guild.shard.send(payload);
 			}
 		});
 

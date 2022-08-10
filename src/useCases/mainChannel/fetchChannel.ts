@@ -2,10 +2,11 @@ import { TextChannel, Message, Guild } from "discord.js";
 
 import Twokei from "@client/Twokei";
 
-import GuildController from "@controllers/GuildController";
 import { CoreLogger } from "@loggers/index";
 import { Media } from "@models/Guild";
+import { fetchGuild } from "@useCases/guildCreation/fetchGuild";
 import { getChannelById } from "@utils/Discord";
+
 
 type fetchChannelResponse = {
 	message?: Message | undefined;
@@ -20,7 +21,7 @@ async function fetchChannel(resolvable: string | Guild, fetch = true): Promise<f
 
 	if(!guildId) return;
 
-	const guildData = await GuildController.get(guildId);
+	const guildData = await fetchGuild(guildId);
 
 	if(!guildData?.media) return;
 
@@ -36,7 +37,7 @@ async function fetchChannel(resolvable: string | Guild, fetch = true): Promise<f
 			if(channel)
 				result['channel'] = channel;
 
-			if(messageId)
+			if(channel && messageId)
 				result['message'] = await channel.messages.fetch(messageId);
 		}
 	}

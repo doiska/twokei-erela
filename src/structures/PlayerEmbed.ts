@@ -2,20 +2,15 @@ import {
 	Message,
 	EmbedData,
 	SelectMenuBuilder,
-	ActionRowBuilder,
 	ButtonBuilder, APIEmbed
 } from "discord.js";
 import { Player } from "erela.js";
 
-import { MessageActionRowComponentBuilder } from "@discordjs/builders";
-import { createEmbed, createMenu, createButtons } from "@utils/DefaultEmbed";
+import { createDefaultEmbed } from "@components/DefaultEmbed";
+import { CoreLogger } from "@loggers/index";
 import { builderToComponent } from "@utils/Discord";
 
-export type Row = {
-	rowId: string;
-	position: number;
-	components: SelectMenuBuilder | ButtonBuilder[];
-}
+export type Row = SelectMenuBuilder | ButtonBuilder[];
 
 export default class PlayerEmbed {
 
@@ -29,8 +24,6 @@ export default class PlayerEmbed {
 	constructor(message: Message, player: Player) {
 		this.message = message;
 		this.player = player;
-
-		this.reset();
 	}
 
 	public setEmbedData(embed?: EmbedData) {
@@ -40,34 +33,31 @@ export default class PlayerEmbed {
 		};
 	}
 
-	public addComponent(component: Row) {
-		this.rows[component.position] = component;
+	public addComponent(position: number, component: Row) {
+		this.rows[position] = component;
 	}
 
-	public async reset() {
+	public async reset(shouldUpdate = false) {
 
-		const [
-			embed,
-			menu,
-			buttons
-		] = await Promise.all([
-			createEmbed(this.player.guild),
-			createMenu(this.player.guild),
-			createButtons(this.player.guild)
-		]);
+		CoreLogger.info(`Embed reset for ${this.player.guild} from PlayerEmbed.ts`);
+
+		const guildId = this.player.guild;
+
+		const { embeds: [embed], components: rows } = await createDefaultEmbed(guildId);
 
 		this.embed = embed;
-		this.rows = [menu, buttons];
+		this.rows = rows;
 
-		return this.deferUpdate();
+		if(shouldUpdate)
+			return this.deferUpdate();
 	}
 
 	public async deferUpdate() {
-		const components = this.rows.map(row => builderToComponent(row.components));
+		const components = this.rows.map((row) => builderToComponent(row));
 
 		return this.message.edit({
 			embeds: [this.embed as APIEmbed],
-			components: components
+			components: [...components]
 		});
 	}
 }

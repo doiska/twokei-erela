@@ -1,7 +1,7 @@
 import { APIButtonComponent, APIMessageComponentEmoji } from "discord.js";
 import { Player } from "erela.js";
 
-import { translateGuild } from "@client/Translator";
+import { translate } from "@client/Translator";
 
 import { ButtonID } from "@utils/CustomId";
 
@@ -12,7 +12,7 @@ type Button = Omit<APIButtonComponent, "style" | "type"> & {
 
 export const createPrimaryButtons = async (player: Player): Promise<Button[]> => {
 
-	const [STOP_BUTTON, REWIND_BUTTON, RESUME_BUTTON, PAUSE_BUTTON, NEXT_BUTTON] = await translateGuild([
+	const [STOP_BUTTON, REWIND_BUTTON, RESUME_BUTTON, PAUSE_BUTTON, NEXT_BUTTON] = await translate([
 		"BUTTON_STOP",
 		"BUTTON_PREVIOUS",
 		"BUTTON_RESUME",
@@ -45,7 +45,7 @@ export const createPrimaryButtons = async (player: Player): Promise<Button[]> =>
 };
 
 export const createSecondaryButtons = async (player: Player): Promise<Button[]> => {
-	const [BUTTON_REPEAT, BUTTON_SHUFFLE] = await translateGuild([
+	const [BUTTON_REPEAT, BUTTON_SHUFFLE] = await translate([
 		"BUTTON_REPEAT",
 		"BUTTON_SHUFFLE",
 		"BUTTON_AUTO_PLAY"

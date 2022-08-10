@@ -1,17 +1,16 @@
 import Twokei from "@client/Twokei";
 
-import GuildController from "@controllers/GuildController";
 import type { Locale } from "@typings/Locale";
+import { fetchGuild } from "@useCases/guildCreation/fetchGuild";
 
-export const translate = (key: string | string[], locale?: Locale | undefined): string[] => {
+const DEFAULT_LOCALE: Locale = 'en';
 
-	if(typeof key === "string")
+export const translate = async (key: string | string[], guild?: string) => {
+
+	const { language: locale } = await fetchGuild(guild) || { language: DEFAULT_LOCALE };
+
+	if (typeof key === "string")
 		return [Twokei.translator.__({ phrase: key, locale })];
 
 	return key.map(k => Twokei.translator.__({ phrase: k, locale }));
-}
-
-export const translateGuild = async (key: string | string[], guild?: string) => {
-	const locale = guild ? await GuildController.getGuildLocale(guild) : "en";
-	return translate(key, locale);
 }

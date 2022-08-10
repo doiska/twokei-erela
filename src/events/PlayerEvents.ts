@@ -1,9 +1,10 @@
 import Twokei from "@client/Twokei";
 
 import { PlayerEventLogger } from "@loggers/index";
-import { PlayerEmbedController } from "@player/controllers/PlayerEmbedController";
 import { registerEvent } from "@structures/EventHandler";
 import { UpdateType } from "@structures/ExtendedPlayer";
+import { deferEmbedUpdate } from "@useCases/playerEmbed/deferUpdate";
+import { resetPlayerEmbed } from "@useCases/playerEmbed/resetEmbed";
 
 
 registerEvent("ready", () => {
@@ -14,15 +15,15 @@ registerEvent("ready", () => {
 
 	playerManager.on("playerDestroy", async (player) => {
 		PlayerEventLogger.info(`Queue ended for guild ${player.guild}`);
-		await PlayerEmbedController.reset(player);
+		await resetPlayerEmbed(player);
 	})
 
 	playerManager.on("trackAdd", async (player) => {
-		await PlayerEmbedController.deferUpdate(player, { menu: true });
+		await deferEmbedUpdate(player, { menu: true });
 	})
 
 	playerManager.on("trackStart", async (player) =>
-		await PlayerEmbedController.deferUpdate(player, { menu: true, button: true, embed: true })
+		await deferEmbedUpdate(player, { menu: true, button: true, embed: true })
 	);
 
 	playerManager.on("trackStuck", async (player, track, payload) =>
@@ -36,6 +37,6 @@ registerEvent("ready", () => {
 	playerManager.on("queueEnd", (player) => player.destroy());
 
 	playerManager.on("queueUpdate", async (player, updateType) =>
-		PlayerEmbedController.deferUpdate(player, { menu: updateType === UpdateType.SHUFFLE, button: true })
+		deferEmbedUpdate(player, { menu: updateType === UpdateType.SHUFFLE, button: true })
 	);
 });

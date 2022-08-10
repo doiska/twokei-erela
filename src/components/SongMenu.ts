@@ -12,7 +12,7 @@ export function createPlayerMenu(player: Player) {
 	const songs = [previous, current, ...player.queue].slice(0, 24);
 
 	return new SelectMenuBuilder({
-		customId: RowID.PRIMARY_MENU,
+		customId: RowID.SONG_MENU,
 		minValues: 1,
 		maxValues: 1,
 		options: songs.filter(Boolean).map((song, index) => ({

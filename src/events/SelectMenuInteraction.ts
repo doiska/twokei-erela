@@ -1,20 +1,21 @@
 import { Interaction, InteractionType, SelectMenuInteraction } from "discord.js";
 
 import Twokei from "@client/Twokei";
+import { PlayerLimitManager } from "@client/UserRateLimit";
 
-import { PlayerLimitManager } from "@controllers/UserRateLimit";
-import { PlayerEmbedController } from "@player/controllers/PlayerEmbedController";
 import { registerEvent } from "@structures/EventHandler";
+import { isEmbedActive } from "@useCases/playerEmbed/isEmbedActive";
 import { RowID } from "@utils/CustomId";
+import { replyThenDelete } from "@utils/Discord";
 
 registerEvent("interactionCreate", async (interaction: Interaction) => {
 
-	if(interaction.type !== InteractionType.MessageComponent || !interaction.guild || interaction.customId !== RowID.PRIMARY_MENU)
+	if(interaction.type !== InteractionType.MessageComponent || !interaction.guild || interaction.customId !== RowID.SONG_MENU)
 		return;
 
 	const { values } = interaction as SelectMenuInteraction;
 
-	if(!PlayerEmbedController.isPlaying(interaction.guild.id)) return;
+	if(!isEmbedActive(interaction.guild.id)) return;
 
 	const player = Twokei.playerManager.get(interaction.guild.id);
 
@@ -47,5 +48,5 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 	}
 
 	playerLimit.consume();
-	await interaction.deferReply().then(() => interaction.deleteReply());
+	replyThenDelete(interaction);
 });

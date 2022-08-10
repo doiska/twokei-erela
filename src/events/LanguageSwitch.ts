@@ -1,15 +1,18 @@
 import { Interaction, InteractionType, GuildMember } from "discord.js";
 
-import { translateGuild } from "@client/Translator";
+import { translate } from "@client/Translator";
 
-import GuildController from "@controllers/GuildController";
-import { PlayerEmbedController } from "@player/controllers/PlayerEmbedController";
+import { ProfilerLogger } from "@loggers/index";
 import { registerEvent } from "@structures/EventHandler";
+import { fetchGuild } from "@useCases/guildCreation/fetchGuild";
+import { saveGuild } from "@useCases/guildCreation/saveGuild";
 import { resetMediaMessage } from "@useCases/mainChannel/resetMedia";
+import { isEmbedActive } from "@useCases/playerEmbed/isEmbedActive";
 import { ButtonID } from "@utils/CustomId";
 import { embed, fastEmbed } from "@utils/Discord";
 
 registerEvent("interactionCreate", async (interaction: Interaction) => {
+
 
 	if (interaction.type !== InteractionType.MessageComponent || !interaction.guild)
 		return;
@@ -17,7 +20,7 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 	if (interaction.customId !== ButtonID.LANGUAGE_SWITCH)
 		return;
 
-	if (PlayerEmbedController.isPlaying(interaction.guild.id))
+	if (isEmbedActive(interaction.guild.id))
 		return;
 
 	const author = interaction.member as GuildMember;
@@ -26,24 +29,37 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 		return;
 
 	if (!author.permissions.has("Administrator")) {
-		const [notEnoughPermissions] = await translateGuild(author.guild.id, "NO_PERMISSIONS");
+		const [notEnoughPermissions] = await translate(author.guild.id, "NO_PERMISSIONS");
 		return interaction.reply({ embeds: [embed(notEnoughPermissions)] })
 	}
 
-	const [changingLanguage] = await translateGuild('CHANGING_LANGUAGE', interaction.guild.id);
+	ProfilerLogger.profile(`language_switch_${interaction.id}`);
+
+	const currentLocale = (await fetchGuild(interaction.guild.id))?.language ?? "en";
+
+	await saveGuild({ id: interaction.guild.id, language: currentLocale === 'pt' ? 'en' : 'pt' })
+
+	const [
+		success,
+		error,
+		changingLanguage
+	] = await translate([
+		'SUCCESS_LANGUAGE_CHANGED',
+		'ERROR_LANGUAGE_CHANGED',
+		'CHANGING_LANGUAGE'
+	], interaction.guild.id);
+
+	ProfilerLogger.profile(`language_switch_${interaction.id}`);
 
 	await interaction.reply({
 		embeds: [embed(`${author.toString()}, ${changingLanguage}`)],
 		ephemeral: true
 	});
 
-	await GuildController.updateLocale(author.guild.id);
-
-	const [success, error] = await translateGuild(['SUCCESS_LANGUAGE_CHANGED', 'ERROR_LANGUAGE_CHANGED'], author.guild.id);
-
 	resetMediaMessage(author.guild.id).then(() => {
 		interaction.editReply(fastEmbed(`${author.toString()}, ${success}`));
 	}).catch(() => {
 		interaction.editReply(fastEmbed(`${author.toString()}, ${error}`));
 	})
+
 });

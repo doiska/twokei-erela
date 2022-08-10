@@ -14,14 +14,6 @@
 		"skipLibCheck": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"typeRoots": [
-			"node_modules/@types"
-		],
-	},
-	"ts-node": {
-		"swc": true,
-		"transpileOnly": true,
-		"require": ["tsconfig-paths/register"]
 	},
 	"exclude": [
 		"node_modules"

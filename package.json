@@ -4,7 +4,7 @@
 	"main": "index.js",
 	"license": "MIT",
 	"scripts": {
-		"dev": "tsnd --respawn -T -r tsconfig-paths/register ./src/index.ts",
+		"dev": "tsnd --respawn -r tsconfig-paths/register ./src/index.ts",
 		"build": "tsc && resolve-tspaths && node --trace-warnings ./dist/index.js"
 	},
 	"devDependencies": {
@@ -20,8 +20,9 @@
 	},
 	"dependencies": {
 		"@discordjs/voice": "^0.11.0-dev.1655381032-4df491c",
+		"@sapphire/discord-utilities": "^2.11.5",
 		"@types/i18n": "^0.13.3",
-		"discord.js": "^14.0.3",
+		"discord.js": "^14.1.2",
 		"dotenv": "^16.0.1",
 		"erela.js": "^2.3.3",
 		"erela.js-spotify": "^1.2.0",

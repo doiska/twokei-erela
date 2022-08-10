@@ -1,7 +1,7 @@
 import { MessageEditOptions } from "discord.js";
 
+import { createDefaultMessage } from "@components/DefaultEmbed";
 import { fetchChannel } from "@useCases/mainChannel/fetchChannel";
-import { createDefaultMessage } from "@utils/DefaultEmbed";
 
 export async function resetMediaMessage(guildId: string) {
 	const channel = await fetchChannel(guildId);

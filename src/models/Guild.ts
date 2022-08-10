@@ -1,16 +1,7 @@
 import type { Locale } from "@typings/Locale";
 
-import { Entity, Column, PrimaryColumn, ObjectIdColumn, DeleteDateColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, ObjectIdColumn } from "typeorm";
 import { UpdateDateColumn, CreateDateColumn } from "typeorm";
-
-export type GuildData = {
-	id: string;
-	name?: string;
-	media?: Media;
-	language?: Locale;
-	created_at?: Date;
-	updated_at?: Date;
-}
 
 export type Media = {
 	channel?: string;
@@ -33,6 +24,8 @@ export class Guild {
 	@Column()
 		media!: Media;
 
+	@Column()
+		dj_role?: string;
 
 	@Column()
 		language?: Locale;
