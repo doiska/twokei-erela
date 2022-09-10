@@ -12,7 +12,7 @@ registerEvent("ready", async () => {
 	if (Twokei.user?.id)
 		CoreLogger.info(`Logged in as ${Twokei.user.tag}`);
 
-	Twokei.emit('guildCreate', Twokei.guilds.cache.first() as Guild);
+	// Twokei.emit('guildCreate', Twokei.guilds.cache.first() as Guild);
 });
 
 registerEvent("guildCreate", async (guild: Guild) => {
