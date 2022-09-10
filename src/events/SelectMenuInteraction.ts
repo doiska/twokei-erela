@@ -3,8 +3,8 @@ import { Interaction, InteractionType, SelectMenuInteraction } from "discord.js"
 import Twokei from "@client/Twokei";
 import { PlayerLimitManager } from "@client/UserRateLimit";
 
+import { isEmbedActive } from "@modules/playerEmbed/isEmbedActive";
 import { registerEvent } from "@structures/EventHandler";
-import { isEmbedActive } from "@useCases/playerEmbed/isEmbedActive";
 import { RowID } from "@utils/CustomId";
 import { replyThenDelete } from "@utils/Discord";
 

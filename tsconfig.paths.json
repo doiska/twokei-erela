@@ -8,8 +8,8 @@
 			"@typings/*": [
 				"./typings/*"
 			],
-			"@useCases/*": [
-				"./useCases/*"
+			"@modules/*": [
+				"./modules/*"
 			],
 			"@config/*": [
 				"./config/*"

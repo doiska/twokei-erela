@@ -3,10 +3,9 @@ import { Message, VoiceBasedChannel } from "discord.js";
 
 import Twokei from "@client/Twokei";
 
-import { create } from "@useCases/player/create";
-import { createPlayerEmbed } from "@useCases/playerEmbed/createPlayerEmbed";
-
-import { isEmbedActive } from "useCases/playerEmbed/isEmbedActive";
+import { create } from "@modules/player/create";
+import { createPlayerEmbed } from "@modules/playerEmbed/createPlayerEmbed";
+import { isEmbedActive } from "@modules/playerEmbed/isEmbedActive";
 
 export enum PlayerResponse {
 	INVALID_FIELDS,

@@ -4,7 +4,7 @@ import Twokei from "@client/Twokei";
 
 import { CoreLogger } from "@loggers/index";
 import { Media } from "@models/Guild";
-import { fetchGuild } from "@useCases/guildCreation/fetchGuild";
+import { fetchGuild } from "@modules/guildCreation/fetchGuild";
 import { getChannelById } from "@utils/Discord";
 
 

@@ -1,7 +1,7 @@
 import { TextChannel } from "discord.js";
 
 
-import { fetchChannel } from "@useCases/mainChannel/fetchChannel";
+import { fetchChannel } from "@modules/mainChannel/fetchChannel";
 
 export enum ValidationResponse {
 	GENERIC_ERROR,

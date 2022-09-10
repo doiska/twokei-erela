@@ -2,8 +2,8 @@ import { Colors, SelectMenuBuilder, ButtonBuilder, ButtonStyle, MessageOptions, 
 
 import { translate } from "@client/Translator";
 
+import { fetchGuild } from "@modules/guildCreation/fetchGuild";
 import { Row } from "@structures/PlayerEmbed";
-import { fetchGuild } from "@useCases/guildCreation/fetchGuild";
 import { RowID, ButtonID, } from "@utils/CustomId";
 import { builderToComponent } from "@utils/Discord";
 
@@ -49,10 +49,10 @@ export const createMenu = async (guildId?: string): Promise<Row> => {
 			.setMinValues(0)
 			.setMaxValues(1)
 			.setCustomId(RowID.SONG_MENU)
-			.setPlaceholder(addSongText)
+			.setPlaceholder(addSongText ?? "Add a song")
 			.setDisabled(true)
 			.setOptions([{
-				label: addSongText,
+				label: addSongText ?? "Add a song",
 				value: "addSong",
 				default: true
 			}])
@@ -61,6 +61,29 @@ export const createMenu = async (guildId?: string): Promise<Row> => {
 
 export const createButtons = async (guildId?: string): Promise<Row> => {
 
+	//TODO: add playlist
+	const [ADD_SONG, LOAD_PLAYLIST] = await translate(['BUTTON_EMBED_ADD_SONG', 'BUTTON_LOAD_PLAYLIST'], guildId);
+
+	const buttons = [
+		{
+			customId: ButtonID.ADD_SONG,
+			label: ADD_SONG ?? 'Add Song',
+			style: ButtonStyle.Primary,
+			emoji: "🎵",
+		},
+		{
+			customId: ButtonID.LOAD_PLAYLIST,
+			label: LOAD_PLAYLIST ?? 'Load Playlist',
+			style: ButtonStyle.Primary,
+			emoji: "📃",
+			disabled: true,
+		}
+	] as InteractionButtonComponentData[]
+
+	return buttons.map(button => new ButtonBuilder(button));
+};
+
+export const createSecondaryButtons = async (guildId?: string): Promise<Row> => {
 	const [UPDATE_LOCALE, UPDATE_IMAGE] = await translate(['EMBED_LANGUAGE_SWITCH', 'BUTTON_IMAGE_EDITOR'], guildId);
 
 	const buttons = [
@@ -79,24 +102,30 @@ export const createButtons = async (guildId?: string): Promise<Row> => {
 	] as InteractionButtonComponentData[]
 
 	return buttons.map(button => new ButtonBuilder(button));
-};
+}
 
 export const createDefaultEmbed = async (guildId?: string) => {
 
-	const [buttons, menu, embed] = await Promise.all([createButtons(guildId), createMenu(guildId), createEmbed(guildId)]);
+	const [buttons, secondary_buttons, menu, embed] = await Promise.all([
+		createButtons(guildId),
+		createSecondaryButtons(guildId),
+		createMenu(guildId),
+		createEmbed(guildId)
+	]);
 
 	return {
-		embeds: [embed as EmbedData],
-		components: [menu, buttons],
+		embeds: [embed],
+		components: [menu, buttons, secondary_buttons],
 	};
 };
 
 export const createDefaultMessage = async (guildId?: string): Promise<MessageOptions> => {
 
-	const [buttons, menu, embed] = await Promise.all([createButtons(guildId), createMenu(guildId), createEmbed(guildId)]);
+	const beforeBuild = await createDefaultEmbed(guildId);
+	const components = beforeBuild.components?.map(builderToComponent);
 
 	return {
-		embeds: [embed as APIEmbed],
-		components: [menu, buttons].map(builderToComponent),
+		embeds: beforeBuild.embeds as APIEmbed[],
+		components,
 	};
 }

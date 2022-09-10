@@ -1,8 +1,8 @@
 import { ButtonBuilder, ButtonStyle, ButtonInteraction, GuildMember, ComponentType, Message } from "discord.js";
 
 
-import { showRoleMenu } from "@useCases/setupGuild/roles/showRoleMenu";
-import { showRoleModal } from "@useCases/setupGuild/roles/showRoleModal";
+import { showRoleMenu } from "@modules/setupGuild/roles/showRoleMenu";
+import { showRoleModal } from "@modules/setupGuild/roles/showRoleModal";
 import { embed, builderToComponent } from "@utils/Discord";
 
 export const askRoleCreation = async (message: Message) => {

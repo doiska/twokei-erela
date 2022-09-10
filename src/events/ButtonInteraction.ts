@@ -1,11 +1,10 @@
-import { ButtonInteraction, Interaction } from "discord.js";
-import { InteractionType } from 'discord.js';
+import { InteractionType, ButtonInteraction, Interaction } from "discord.js";
 
 import Twokei from "@client/Twokei";
 import { InteractionLimitManager } from "@client/UserRateLimit";
 
+import { isEmbedActive } from "@modules/playerEmbed/isEmbedActive";
 import { registerEvent } from "@structures/EventHandler";
-import { isEmbedActive } from "@useCases/playerEmbed/isEmbedActive";
 import { ButtonID } from "@utils/CustomId";
 import { replyThenDelete } from "@utils/Discord";
 

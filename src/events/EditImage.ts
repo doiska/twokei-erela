@@ -2,15 +2,14 @@ import { Interaction, InteractionType, ButtonInteraction, GuildMember } from "di
 
 import { translate } from "@client/Translator";
 
+import { saveGuild } from "@modules/guildCreation/saveGuild";
+import { fetchChannel } from "@modules/mainChannel/fetchChannel";
+import { resetMediaMessage } from "@modules/mainChannel/resetMedia";
 import { registerEvent } from "@structures/EventHandler";
-import { saveGuild } from "@useCases/guildCreation/saveGuild";
-import { fetchChannel } from "@useCases/mainChannel/fetchChannel";
-import { resetMediaMessage } from "@useCases/mainChannel/resetMedia";
 import { ButtonID } from "@utils/CustomId";
 import { embed, fastEmbed, reply } from "@utils/Discord";
 
 import { createImageModal } from "../modals/ImageModal";
-
 
 registerEvent("interactionCreate", async (interaction: Interaction) => {
 

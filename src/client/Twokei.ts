@@ -23,7 +23,6 @@ export class ExtendedClient extends Client {
 		super({
 			intents: [
 				"Guilds",
-				"MessageContent",
 				"GuildMessages",
 				"GuildVoiceStates",
 				"GuildMembers"
@@ -35,7 +34,7 @@ export class ExtendedClient extends Client {
 
 		const plugins = [];
 
-		if(process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
+		if (process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
 			plugins.push(new Spotify({
 				clientID: process.env.SPOTIFY_CLIENT_ID,
 				clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -50,9 +49,10 @@ export class ExtendedClient extends Client {
 			locales: ["en", "pt"],
 			defaultLocale: "en",
 			autoReload: true,
-			directory: path.join(__dirname, "..", "locales"),
 			syncFiles: true,
+			directory: path.join(__dirname, "..", "locales"),
 			logWarnFn: (msg: string) => CoreLogger.warn(msg),
+			logDebugFn: (msg: string) => CoreLogger.debug(msg),
 			logErrorFn: (msg: string) => CoreLogger.error(msg),
 		});
 
@@ -65,8 +65,14 @@ export class ExtendedClient extends Client {
 			}
 		});
 
-		process.on("unhandledRejection", (ex) => CoreLogger.error(ex));
-		process.on("uncaughtException", (ex) => CoreLogger.error(ex));
+		process.on("unhandledRejection", (ex) => {
+			CoreLogger.error(`Unhandled Rejection: ${ex}`, ex);
+			console.log(ex);
+		});
+		process.on("uncaughtException", (ex) => {
+			CoreLogger.error(`Uncaught Exception: ${ex}`, ex);
+			console.log(ex);
+		});
 	}
 
 	public async initializeDS() {
@@ -74,7 +80,7 @@ export class ExtendedClient extends Client {
 	}
 
 	public async loadEvents() {
-		walk(path.join(__dirname, "..", "events")).map(c => import(c));
+		walk(path.join(__dirname, "..", "events")).forEach(c => import(c));
 	}
 }
 

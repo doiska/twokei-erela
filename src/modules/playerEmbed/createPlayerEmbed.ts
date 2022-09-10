@@ -2,8 +2,8 @@ import { Player } from "erela.js";
 
 import Twokei from "@client/Twokei";
 
+import { fetchChannel } from "@modules/mainChannel/fetchChannel";
 import PlayerEmbed from "@structures/PlayerEmbed";
-import { fetchChannel } from "@useCases/mainChannel/fetchChannel";
 
 export async function createPlayerEmbed(player: Player) {
 	const { channel, message } = await fetchChannel(player.guild) || {};

@@ -3,11 +3,11 @@ import { Interaction, InteractionType, GuildMember } from "discord.js";
 import { translate } from "@client/Translator";
 
 import { ProfilerLogger } from "@loggers/index";
+import { fetchGuild } from "@modules/guildCreation/fetchGuild";
+import { saveGuild } from "@modules/guildCreation/saveGuild";
+import { resetMediaMessage } from "@modules/mainChannel/resetMedia";
+import { isEmbedActive } from "@modules/playerEmbed/isEmbedActive";
 import { registerEvent } from "@structures/EventHandler";
-import { fetchGuild } from "@useCases/guildCreation/fetchGuild";
-import { saveGuild } from "@useCases/guildCreation/saveGuild";
-import { resetMediaMessage } from "@useCases/mainChannel/resetMedia";
-import { isEmbedActive } from "@useCases/playerEmbed/isEmbedActive";
 import { ButtonID } from "@utils/CustomId";
 import { embed, fastEmbed } from "@utils/Discord";
 

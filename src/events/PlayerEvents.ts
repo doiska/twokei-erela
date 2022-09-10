@@ -1,10 +1,10 @@
 import Twokei from "@client/Twokei";
 
 import { PlayerEventLogger } from "@loggers/index";
+import { deferEmbedUpdate } from "@modules/playerEmbed/deferUpdate";
+import { resetPlayerEmbed } from "@modules/playerEmbed/resetEmbed";
 import { registerEvent } from "@structures/EventHandler";
 import { UpdateType } from "@structures/ExtendedPlayer";
-import { deferEmbedUpdate } from "@useCases/playerEmbed/deferUpdate";
-import { resetPlayerEmbed } from "@useCases/playerEmbed/resetEmbed";
 
 
 registerEvent("ready", () => {
@@ -23,8 +23,7 @@ registerEvent("ready", () => {
 	})
 
 	playerManager.on("trackStart", async (player) =>
-		await deferEmbedUpdate(player, { menu: true, button: true, embed: true })
-	);
+		deferEmbedUpdate(player, { menu: true, button: true, embed: true }));
 
 	playerManager.on("trackStuck", async (player, track, payload) =>
 		PlayerEventLogger.error(`TRACK STUCK:`, { track, payload })

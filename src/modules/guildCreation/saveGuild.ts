@@ -1,7 +1,7 @@
 import { XiaoDS } from "@client/XiaoDS";
 
 import { Guild } from "@models/Guild";
-import { fetchGuild } from "@useCases/guildCreation/fetchGuild";
+import { fetchGuild } from "@modules/guildCreation/fetchGuild";
 
 import _ from "lodash";
 
