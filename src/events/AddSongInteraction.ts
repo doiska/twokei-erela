@@ -2,9 +2,9 @@ import { Interaction, InteractionType, ChannelType, GuildMember } from "discord.
 
 import Twokei from "@client/Twokei";
 
-import { ProfilerLogger } from "@loggers/index";
 import { createSongModal } from "@modals/AddSongModal";
 import { verifyChannel, ValidationResponse } from "@modules/mainChannel/verifyChannel";
+import { play, PlayerResponse } from "@modules/player/play";
 import { registerEvent } from "@structures/EventHandler";
 import { ButtonID } from "@utils/CustomId";
 import { fastEmbed } from "@utils/Discord";
@@ -63,7 +63,14 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 				return;
 			}
 
-			submission.reply({ ...fastEmbed('Adicionada com sucesso!'), ephemeral: true });
+			play(songInput, interaction.message, voiceChannel).then((res) => {
+				if (res === PlayerResponse.SUCCESS) {
+					submission.reply({ ...fastEmbed('Adicionada com sucesso!'), ephemeral: true });
+					return;
+				}
+
+				submission.reply({ ...fastEmbed('Ocorreu um erro, é possível que a música não esteja acessível.'), ephemeral: true });
+			})
 		})
 		.catch(async (err) => {
 			console.log(err);

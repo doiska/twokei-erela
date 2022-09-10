@@ -1,4 +1,4 @@
-import { Message, VoiceBasedChannel } from "discord.js";
+import { Message, VoiceBasedChannel, Interaction } from "discord.js";
 
 
 import Twokei from "@client/Twokei";
@@ -13,9 +13,10 @@ export enum PlayerResponse {
 	SUCCESS
 }
 
-export async function play(content: string, { guild, member, channel: { id: channelId } }: Message, voiceChannel: VoiceBasedChannel) {
-	if (!guild || !member) return PlayerResponse.INVALID_FIELDS;
+export async function play(content: string, { guild, member, channel }: Message | Interaction, voiceChannel: VoiceBasedChannel) {
+	if (!guild || !member || !channel) return PlayerResponse.INVALID_FIELDS;
 
+	const channelId = channel.id;
 	const { tracks, loadType } = await Twokei.playerManager.search({ query: content }, member);
 
 	if (loadType === "NO_MATCHES" || loadType === "LOAD_FAILED")
