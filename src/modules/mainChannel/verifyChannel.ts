@@ -16,7 +16,7 @@ export async function verifyChannel({ id, guild, messages }: TextChannel): Promi
 
 	if (!guild) return ValidationResponse.GENERIC_ERROR;
 
-	const fetched = await fetchChannel(guild.id, false);
+	const fetched = await fetchChannel(guild.id, true);
 
 	if (!fetched?.media.channel) return ValidationResponse.INVALID_CHANNEL;
 

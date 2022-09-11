@@ -37,8 +37,9 @@ async function fetchChannel(resolvable: string | Guild, fetch = true): Promise<f
 			if(channel)
 				result['channel'] = channel;
 
-			if(channel && messageId)
-				result['message'] = await channel.messages.fetch(messageId);
+			if(messageId) {
+				result['message'] = await channel?.messages.fetch(messageId);
+			}
 		}
 	}
 
