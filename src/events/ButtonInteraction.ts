@@ -16,8 +16,11 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 
 	if (!button.customId || !button.guild) return;
 
-	if (!Object.values(ButtonID).includes(button.customId))
+	if (!Object.values(ButtonID).includes(button.customId)) {
 		return;
+	}
+
+	console.log(`Button id: ${button.customId}`);
 
 	const userInteractionLimit = InteractionLimitManager.acquire(`button-${interaction.user.id}`);
 

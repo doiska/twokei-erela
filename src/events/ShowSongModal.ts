@@ -4,20 +4,20 @@ import Twokei from "@client/Twokei";
 
 import { createSongModal } from "@modals/AddSongModal";
 import { verifyChannel, ValidationResponse } from "@modules/mainChannel/verifyChannel";
-import { play, PlayerResponse } from "@modules/player/play";
+import { play } from "@modules/player/play";
 import { registerEvent } from "@structures/EventHandler";
-import { ButtonID } from "@utils/CustomId";
+import { BUTTON_ADD_SONG } from "@utils/CustomId";
 import { fastEmbed } from "@utils/Discord";
 
 registerEvent("interactionCreate", async (interaction: Interaction) => {
 
-
 	if (interaction.type !== InteractionType.MessageComponent || !interaction.guild)
 		return;
 
-	if (interaction.customId !== ButtonID.ADD_SONG)
+	if (interaction.customId !== BUTTON_ADD_SONG)
 		return;
 
+	const guildId = interaction.guild.id;
 	const member = interaction.member as GuildMember;
 	const channel = interaction.channel;
 
@@ -54,26 +54,22 @@ registerEvent("interactionCreate", async (interaction: Interaction) => {
 
 	await interaction.showModal(createSongModal());
 
-	interaction.awaitModalSubmit({ filter: (i) => (i.user.id === interaction.user.id) && i.customId === 'add-song-modal', time: 60000 })
-		.then(async (submission) => {
-			const songInput = submission.fields.getTextInputValue('song-input');
+	const modalSubmit = interaction.awaitModalSubmit({
+		filter: (i) => i.user.id === member.id,
+		time: 30000
+	});
 
-			if (!songInput) {
-				await submission.reply({ ...fastEmbed('Você não inseriu uma música.'), ephemeral: true });
-				return;
-			}
-
-			play(songInput, interaction.message, voiceChannel).then((res) => {
-				if (res === PlayerResponse.SUCCESS) {
-					submission.reply({ ...fastEmbed('Adicionada com sucesso!'), ephemeral: true });
-					return;
-				}
-
-				submission.reply({ ...fastEmbed('Ocorreu um erro, é possível que a música não esteja acessível.'), ephemeral: true });
-			})
-		})
-		.catch(async (err) => {
-			console.log(err);
-			await interaction.reply({ ...fastEmbed('Tempo expirado.'), ephemeral: true });
+	modalSubmit.then(async (submission) => {
+		const url = submission.fields.getTextInputValue('song-input');
+		await submission.reply({ ...fastEmbed('Song added to queue'), ephemeral: true });
+		await play(url, {
+			guildId: guildId,
+			channelId: channel.id,
+			voiceChannelId: voiceChannel.id,
+			member,
 		});
+	}).catch(async (e) => {
+		console.error(e);
+		await interaction.followUp({ ...fastEmbed('There was an error trying to play the song'), ephemeral: true });
+	});
 });

@@ -2,6 +2,8 @@ import { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } from
 
 export const createSongModal = () => {
 
+	const randomId = Math.random().toString(36).substring(2, 15);
+
 	const songInput = new TextInputBuilder()
 		.setLabel('Song input')
 		.setCustomId('song-input')
@@ -12,5 +14,5 @@ export const createSongModal = () => {
 
 	const row = new ActionRowBuilder<TextInputBuilder>().addComponents(songInput);
 
-	return new ModalBuilder({ title: 'Twokei', components: [row], customId: 'add-song-modal' });
+	return new ModalBuilder({ title: 'Twokei', components: [row], customId: `modal-song-${randomId}` });
 }

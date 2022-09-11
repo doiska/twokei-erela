@@ -4,6 +4,7 @@ import { Player } from "erela.js";
 import Twokei from "@client/Twokei";
 
 import { createPrimaryButtons, createSecondaryButtons } from "@components/Buttons";
+import { createButtons } from "@components/DefaultEmbed";
 import { createPlayerMenu } from "@components/SongMenu";
 import { EmbedUpdatableFields } from "@typings/Player";
 
@@ -31,8 +32,9 @@ export async function deferEmbedUpdate(player: Player, { embed, menu, button }: 
 		currentEmbed.addComponent(0, createPlayerMenu(player));
 
 	if (button) {
-		currentEmbed.addComponent(1, (await createPrimaryButtons(player)).map(b => new ButtonBuilder({ ...b, style: ButtonStyle.Secondary })));
-		currentEmbed.addComponent(2, (await createSecondaryButtons(player)).map(b => new ButtonBuilder({ ...b, style: ButtonStyle.Secondary })))
+		currentEmbed.addComponent(1, (await createButtons(player.guild)))
+		currentEmbed.addComponent(2, (await createPrimaryButtons(player)).map(b => new ButtonBuilder({ ...b, style: ButtonStyle.Secondary })));
+		currentEmbed.addComponent(3, (await createSecondaryButtons(player)).map(b => new ButtonBuilder({ ...b, style: ButtonStyle.Secondary })))
 	}
 
 	return currentEmbed.deferUpdate();

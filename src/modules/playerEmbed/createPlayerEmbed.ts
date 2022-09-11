@@ -1,3 +1,4 @@
+import { GuildTextBasedChannel } from "discord.js";
 import { Player } from "erela.js";
 
 import Twokei from "@client/Twokei";
@@ -16,7 +17,7 @@ export async function createPlayerEmbed(player: Player) {
 	const playerEmbed = new PlayerEmbed(message, player);
 	Twokei.embeds.set(player.guild, playerEmbed);
 	await playerEmbed.reset(false);
-	console.log(`Embed successfully created and reseted.`)
-	// const deletable = (await channel.messages.fetch({ limit: 100 })).filter(m => m.id !== message.id);
-	// (message.channel as GuildTextBasedChannel).bulkDelete(deletable, true);
+
+	const deletable = (await channel.messages.fetch({ limit: 20 })).filter(m => m.id !== message.id);
+	await (message.channel as GuildTextBasedChannel).bulkDelete(deletable, true);
 }

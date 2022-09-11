@@ -4,7 +4,7 @@ import { translate } from "@client/Translator";
 
 import { fetchGuild } from "@modules/guildCreation/fetchGuild";
 import { Row } from "@structures/PlayerEmbed";
-import { RowID, ButtonID, } from "@utils/CustomId";
+import { RowID, ButtonID, BUTTON_ADD_SONG, } from "@utils/CustomId";
 import { builderToComponent } from "@utils/Discord";
 
 const DEFAULT_MEDIA_IMAGE = 'https://cdn.discordapp.com/attachments/945719334402134016/970477237700812810/df661b213ee05573007418bcd5cca532.gif';
@@ -66,7 +66,7 @@ export const createButtons = async (guildId?: string): Promise<Row> => {
 
 	const buttons = [
 		{
-			customId: ButtonID.ADD_SONG,
+			customId: BUTTON_ADD_SONG,
 			label: ADD_SONG ?? 'Add Song',
 			style: ButtonStyle.Primary,
 			emoji: "🎵",

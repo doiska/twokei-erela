@@ -22,6 +22,6 @@ export const ButtonID = {
 	EDIT_IMAGE: "edit-image-button",
 
 	USE_DJ_ROLE: "use-role-name-button",
-
-	ADD_SONG: "add-song-modal-button"
 };
+
+export const BUTTON_ADD_SONG = "add-song-modal-button"

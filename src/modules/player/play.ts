@@ -1,4 +1,4 @@
-import { Message, VoiceBasedChannel, Interaction } from "discord.js";
+import { Message, VoiceBasedChannel, Interaction, GuildMember } from "discord.js";
 
 
 import Twokei from "@client/Twokei";
@@ -13,23 +13,29 @@ export enum PlayerResponse {
 	SUCCESS
 }
 
-export async function play(content: string, { guild, member, channel }: Message | Interaction, voiceChannel: VoiceBasedChannel) {
-	if (!guild || !member || !channel) return PlayerResponse.INVALID_FIELDS;
+type Props = {
+	guildId: string;
+	member: GuildMember,
+	channelId: string;
+	voiceChannelId: string,
+}
 
-	const channelId = channel.id;
+export async function play(content: string, { guildId, member, channelId, voiceChannelId }: Props) {
+	if (!guildId || !member || !channelId) return PlayerResponse.INVALID_FIELDS;
+
 	const { tracks, loadType } = await Twokei.playerManager.search({ query: content }, member);
 
 	if (loadType === "NO_MATCHES" || loadType === "LOAD_FAILED")
 		return PlayerResponse.NO_MATCHES;
 
-	const player = await create(guild.id, channelId, voiceChannel.id);
+	const player = create(guildId, channelId, voiceChannelId);
 
 	if (loadType === "SEARCH_RESULT" || loadType === "TRACK_LOADED")
 		player.add(tracks[0]);
 	else
 		player.add(tracks);
 
-	if(!isEmbedActive(guild.id))
+	if(!isEmbedActive(guildId))
 		await createPlayerEmbed(player);
 
 	if (!player.playing && !player.paused && !player.queue.size) {
