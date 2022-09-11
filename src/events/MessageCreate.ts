@@ -22,6 +22,8 @@ registerEvent("messageCreate", async (message: Message) => {
 		return;
 	}
 
+	console.log("Message received, playing...", message.content);
+
 	if(!message.content || !message.channel || !message.member.voice.channelId) return;
 
 	await play(message.content, {
