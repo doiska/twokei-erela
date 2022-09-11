@@ -1,12 +1,8 @@
 import { Message, ChannelType } from "discord.js";
 
-import { translate } from "@client/Translator";
-import Twokei from "@client/Twokei";
-
 import { ValidationResponse, verifyChannel } from "@modules/mainChannel/verifyChannel";
-import { play, PlayerResponse } from "@modules/player/play";
+import { play,  } from "@modules/player/play";
 import { registerEvent } from "@structures/EventHandler";
-import { sendTemporaryMessage, embed } from "@utils/Discord";
 
 registerEvent("messageCreate", async (message: Message) => {
 	if (message.author.bot || !message.guild || !message.member) return;
@@ -26,9 +22,12 @@ registerEvent("messageCreate", async (message: Message) => {
 		return;
 	}
 
-	if(!message.content) {
-		return message.reply(
-			"Oi, o Twokei não suporta mais mensagem de texto por uma limitação do discord, clique em 'Adicionar música' a partir de agora.\nMais detalhes: https://support-dev.discord.com/hc/articles/4404772028055"
-		)
-	}
+	if(!message.content || !message.channel || !message.member.voice.channelId) return;
+
+	await play(message.content, {
+		guildId: message.guild.id,
+		member: message.member,
+		channelId: message.channel.id,
+		voiceChannelId: message.member.voice.channelId,
+	})
 });
